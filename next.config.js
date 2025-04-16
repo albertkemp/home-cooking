@@ -1,12 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
+  basePath: '/home-cooking',
+  assetPrefix: '/home-cooking/',
   experimental: {
     serverActions: {
       allowedOrigins: ["localhost:3000", "localhost:3001"],
     },
-  },
-  images: {
-    domains: ['res.cloudinary.com', 'q6.itc.cn'],
   },
   webpack: (config) => {
     config.externals = [...(config.externals || []), "bcrypt"];
