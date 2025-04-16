@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+interface RouteContext {
+  params: {
+    id: string;
+  };
+}
+
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: RouteContext
 ): Promise<NextResponse> {
   try {
     const cook = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: context.params.id },
       include: {
         menu: {
           include: {
