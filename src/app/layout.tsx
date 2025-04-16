@@ -5,13 +5,15 @@ import { Providers } from "./providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth/auth";
 import Header from "@/components/Header";
-import { Inter } from 'next/font/google';
 import { SessionProvider } from '@/components/SessionProvider';
 import { CartProvider } from '@/contexts/CartContext';
 import { Navbar } from '@/components/Navbar';
 
-const lato = Lato({ subsets: ["latin"], weight: ['400', '700'] });
-const inter = Inter({ subsets: ['latin'] });
+const lato = Lato({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "Home Cooking",
@@ -27,7 +29,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${lato.className} text-2xl`}>
+      <body className={`${lato.className} text-base`}>
         <SessionProvider session={session}>
           <CartProvider>
             <Navbar />
