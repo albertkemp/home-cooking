@@ -208,7 +208,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     }
 
     // Delete all related records in a transaction
-    await prisma.$transaction(async (tx: typeof prisma) => {
+    await prisma.$transaction(async (tx) => {
       // Delete associated images first
       console.log("Server: Deleting associated images");
       await tx.image.deleteMany({
