@@ -3,11 +3,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     const cook = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id: context.params.id },
       include: {
         menu: {
           include: {
