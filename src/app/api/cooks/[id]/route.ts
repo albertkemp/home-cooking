@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-  request: NextRequest,
+  _req: Request,
   { params }: { params: { id: string } }
-): Promise<Response> {
+) {
   try {
     const cook = await prisma.user.findUnique({
       where: { id: params.id },
