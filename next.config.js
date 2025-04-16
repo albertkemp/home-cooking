@@ -1,11 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   images: {
-    unoptimized: true,
+    domains: ['res.cloudinary.com', 'q6.itc.cn'],
   },
-  basePath: '/home-cooking',
-  assetPrefix: '/home-cooking/',
   experimental: {
     serverActions: {
       allowedOrigins: ["localhost:3000", "localhost:3001"],
@@ -15,6 +12,6 @@ const nextConfig = {
     config.externals = [...(config.externals || []), "bcrypt"];
     return config;
   },
-};
+}
 
-module.exports = nextConfig; 
+module.exports = nextConfig 
