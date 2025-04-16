@@ -1,17 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-type RouteSegmentProps = {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
 export async function GET(
-  req: NextRequest,
-  { params }: RouteSegmentProps
-) {
+  request: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<Response> {
   try {
     const cook = await prisma.user.findUnique({
       where: { id: params.id },
