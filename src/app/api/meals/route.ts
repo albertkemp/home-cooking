@@ -101,6 +101,8 @@ export async function POST(req: Request) {
       menu = await prisma.menu.create({
         data: {
           cookId: session.user.id,
+          name: "My Menu",
+          description: "A collection of my homemade meals"
         },
       });
     }
@@ -117,6 +119,7 @@ export async function POST(req: Request) {
         startDate: startDate ? new Date(startDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         menuId: menu.id,
+        cookId: session.user.id,
       },
     });
 
@@ -126,6 +129,7 @@ export async function POST(req: Request) {
         data: {
           url: imageUrl,
           foodItemId: foodItem.id,
+          userId: session.user.id,
         },
       });
     }
