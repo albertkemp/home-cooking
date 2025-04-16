@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         name,
-        role: role as "USER" | "COOK" | "ADMIN",
+        role: role as "COOK" | "EATER",
         address,
         bio: bio || null,
       },

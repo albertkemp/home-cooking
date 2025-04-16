@@ -10,7 +10,7 @@ export default function SignupPage() {
     email: '',
     password: '',
     name: '',
-    role: 'USER', // Default role
+    role: 'EATER', // Default role
     address: '',
     bio: '',
   });
@@ -158,7 +158,7 @@ export default function SignupPage() {
                   value={formData.role}
                   onChange={handleChange}
                 >
-                  <option value="USER">I want to order food (User)</option>
+                  <option value="EATER">I want to order food (Eater)</option>
                   <option value="COOK">I want to sell food (Cook)</option>
                 </select>
               </div>

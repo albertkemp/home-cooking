@@ -9,8 +9,7 @@ type NextAuthRole = "COOK" | "EATER";
 
 // Map Prisma roles to NextAuth roles
 function mapRole(prismaRole: UserRole): NextAuthRole {
-  if (prismaRole === "COOK") return "COOK";
-  return "EATER"; // Map USER and ADMIN to EATER
+  return prismaRole as NextAuthRole; // Now they match exactly
 }
 
 export const authOptions: NextAuthOptions = {
