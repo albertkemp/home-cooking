@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "FoodItem" ADD COLUMN     "servings" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "servingsSold" INTEGER NOT NULL DEFAULT 0;
