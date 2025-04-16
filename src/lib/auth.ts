@@ -2,6 +2,16 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 import bcrypt from "bcrypt";
+import { UserRole } from "@prisma/client";
+
+// Define the role type that NextAuth expects
+type NextAuthRole = "COOK" | "EATER";
+
+// Map Prisma roles to NextAuth roles
+function mapRole(prismaRole: UserRole): NextAuthRole {
+  if (prismaRole === "COOK") return "COOK";
+  return "EATER"; // Map USER and ADMIN to EATER
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -39,7 +49,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: mapRole(user.role),
         };
       },
     }),
