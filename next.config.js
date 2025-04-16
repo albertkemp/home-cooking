@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     domains: ['res.cloudinary.com', 'q6.itc.cn'],
+    unoptimized: true,
   },
   experimental: {
     serverActions: {
