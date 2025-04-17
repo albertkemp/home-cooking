@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ImageUpload } from "@/components/ImageUpload";
-import type { User } from "@/generated/prisma";
+import type { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
 interface ProfileImageUploadProps {

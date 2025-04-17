@@ -27,7 +27,7 @@ interface CookProfileClientProps {
 
 export function CookProfileClient({ cook, session }: CookProfileClientProps) {
   const router = useRouter();
-  const [cookData, setCookData] = useState(cook);
+  const [cookData, setCookData] = useState<CookWithRelations>(cook);
 
   const formattedReviews = cookData.reviewsReceived || [];
   const averageRating =
@@ -42,7 +42,6 @@ export function CookProfileClient({ cook, session }: CookProfileClientProps) {
 
   const handleImageUpdate = (url: string) => {
     setCookData(prev => {
-      if (!prev) return prev;
       return { ...prev, image: url };
     });
     router.refresh();
