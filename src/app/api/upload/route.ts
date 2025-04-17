@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import cloudinary from "@/utils/cloudinary";
 import { prisma } from "@/lib/prisma";
+import { Readable } from "stream";
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,6 +12,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "You must be logged in to upload images" },
         { status: 401 }
+      );
+    }
+
+    // Check if Cloudinary configuration is available
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error("Missing Cloudinary configuration");
+      return NextResponse.json(
+        { error: "Server configuration error" },
+        { status: 500 }
       );
     }
 
@@ -26,28 +36,44 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!type) {
+      return NextResponse.json(
+        { error: "No type provided" },
+        { status: 400 }
+      );
+    }
+
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     // Upload to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
+    let imageUrl;
+    try {
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
           {
+            folder: `home-cooking/${type}`,
             resource_type: "auto",
-            folder: type === "profile" ? "profiles" : "food-items",
-            public_id: foodItemId ? `food-${foodItemId}` : undefined,
           },
           (error, result) => {
             if (error) reject(error);
             else resolve(result);
           }
-        )
-        .end(buffer);
-    });
+        );
 
-    const imageUrl = (result as any).secure_url;
+        const stream = Readable.from(buffer);
+        stream.pipe(uploadStream);
+      });
+
+      imageUrl = (result as any).secure_url;
+    } catch (uploadError) {
+      console.error("Cloudinary upload error:", uploadError);
+      return NextResponse.json(
+        { error: "Failed to upload image to cloud storage" },
+        { status: 500 }
+      );
+    }
 
     // Save to database
     const image = await prisma.image.create({
@@ -68,9 +94,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(image);
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error("Unexpected error:", error);
     return NextResponse.json(
-      { error: "Failed to upload image" },
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }

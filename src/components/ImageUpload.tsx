@@ -51,16 +51,21 @@ export function ImageUpload({
         body: formData,
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to upload image');
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(`Server returned non-JSON response: ${contentType}`);
       }
 
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to upload image');
+      }
+
       onUploadComplete(data.url);
-    } catch (err: any) {
-      setError(err.message || 'Failed to upload image');
-      setPreviewUrl(null);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError(err instanceof Error ? err.message : 'Failed to upload image');
     } finally {
       setIsUploading(false);
     }
