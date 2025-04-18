@@ -7,6 +7,7 @@ import { Readable } from "stream";
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if user is authenticated
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
-    const type = formData.get("type") as string; // "profile" or "food"
+    const type = formData.get("type") as string;
     const foodItemId = formData.get("foodItemId") as string;
 
     if (!file) {
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert file to buffer
+    // Convert File to Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -76,23 +77,29 @@ export async function POST(request: NextRequest) {
     }
 
     // Save to database
-    const image = await prisma.image.create({
-      data: {
-        url: imageUrl,
-        userId: session.user.id,
-        foodItemId: foodItemId || null,
-      },
-    });
-
-    // If this is a profile image, update the user's image field
-    if (type === "profile") {
-      await prisma.user.update({
-        where: { id: session.user.id },
-        data: { image: imageUrl },
+    try {
+      const image = await prisma.image.create({
+        data: {
+          url: imageUrl,
+          userId: session.user.id,
+          foodItemId: foodItemId || null,
+        },
       });
-    }
 
-    return NextResponse.json(image);
+      // If this is a profile image, update the user's image field
+      if (type === "profile") {
+        await prisma.user.update({
+          where: { id: session.user.id },
+          data: { image: imageUrl },
+        });
+      }
+
+      return NextResponse.json(image);
+    } catch (dbError) {
+      console.error("Database error:", dbError);
+      // Still return the image URL even if database update fails
+      return NextResponse.json({ url: imageUrl });
+    }
   } catch (error) {
     console.error("Unexpected error:", error);
     return NextResponse.json(
