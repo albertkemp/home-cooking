@@ -18,6 +18,7 @@ export function ImageUpload({
   currentImageUrl,
   className = '',
 }: ImageUploadProps) {
+  console.log("ImageUpload: Component rendered");
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -103,37 +104,52 @@ export function ImageUpload({
   };
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("ImageUpload: Button clicked");
-    if (fileInputRef.current) {
-      console.log("ImageUpload: Triggering file input click");
+    console.log("ImageUpload: Button clicked - start");
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("ImageUpload: Event prevented and stopped");
+      
+      if (!fileInputRef.current) {
+        console.error("ImageUpload: File input ref is null");
+        return;
+      }
+      
+      console.log("ImageUpload: File input ref exists", {
+        type: fileInputRef.current.type,
+        accept: fileInputRef.current.accept,
+        disabled: fileInputRef.current.disabled
+      });
+      
       fileInputRef.current.click();
-    } else {
-      console.error("ImageUpload: File input ref is null");
+      console.log("ImageUpload: File input click triggered");
+    } catch (error) {
+      console.error("ImageUpload: Error in handleClick:", error);
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("ImageUpload: File input changed", { 
-      files: e.target.files?.length,
-      file: e.target.files?.[0] ? {
-        name: e.target.files[0].name,
-        size: e.target.files[0].size,
-        type: e.target.files[0].type
-      } : null
-    });
-    
-    const file = e.target.files?.[0];
-    if (file) {
-      console.log("ImageUpload: Starting upload for file", {
-        name: file.name,
-        size: file.size,
-        type: file.type
+    console.log("ImageUpload: File input changed - start");
+    try {
+      const files = e.target.files;
+      console.log("ImageUpload: Files received", { 
+        hasFiles: !!files,
+        fileCount: files?.length,
+        firstFile: files?.[0] ? {
+          name: files[0].name,
+          size: files[0].size,
+          type: files[0].type
+        } : null
       });
-      handleUpload(file);
-    } else {
-      console.error("ImageUpload: No file selected");
+      
+      if (!files?.length) {
+        console.error("ImageUpload: No file selected");
+        return;
+      }
+      
+      handleUpload(files[0]);
+    } catch (error) {
+      console.error("ImageUpload: Error in handleFileChange:", error);
     }
   };
 

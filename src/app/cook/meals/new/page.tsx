@@ -82,6 +82,19 @@ export default function NewMealPage() {
               {error}
             </div>
           )}
+          <div className="mb-6">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Meal Image
+            </label>
+            <div className="w-full h-48">
+              <ImageUpload
+                type="food"
+                onUploadComplete={handleImageUpload}
+                currentImageUrl={imageUrl || undefined}
+                className="w-full h-full"
+              />
+            </div>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -202,19 +215,6 @@ export default function NewMealPage() {
               </div>
             )}
 
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Meal Image
-              </label>
-              <div className="w-full h-48">
-                <ImageUpload
-                  type="food"
-                  onUploadComplete={handleImageUpload}
-                  currentImageUrl={imageUrl || undefined}
-                  className="w-full h-full"
-                />
-              </div>
-            </div>
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
