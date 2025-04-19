@@ -15,7 +15,7 @@ type MealData = {
   servingsSold: number;
   startDate: string | null;
   endDate: string | null;
-  imageUrl: string | null;
+  images: { url: string }[];
 };
 
 export default function EditMealForm({ mealId }: { mealId: string }) {
@@ -46,7 +46,7 @@ export default function EditMealForm({ mealId }: { mealId: string }) {
         setServings((data.servings || 1).toString());
         setStartDate(data.startDate || "");
         setEndDate(data.endDate || "");
-        setImageUrl(data.imageUrl);
+        setImageUrl(data.images?.[0]?.url || null);
       } catch (error) {
         console.error("Error fetching meal data:", error);
         setError("Failed to load meal data");
@@ -81,6 +81,10 @@ export default function EditMealForm({ mealId }: { mealId: string }) {
       if (!response.ok) {
         throw new Error("Failed to update meal");
       }
+
+      const responseData = await response.json();
+      console.log("PATCH Response:", responseData);
+      console.log("Image URL in response:", responseData.images?.[0]?.url);
 
       router.push("/cook/dashboard");
     } catch (error) {

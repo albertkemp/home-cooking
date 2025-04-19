@@ -36,7 +36,11 @@ export function ImageUpload({
         formData.append('foodItemId', foodItemId);
       }
 
-      console.log("ImageUpload: Sending request to /api/upload");
+      console.log("ImageUpload: Sending request to /api/upload", {
+        origin: window.location.origin,
+        fullUrl: `${window.location.origin}/api/upload`
+      });
+      
       const response = await fetch(`${window.location.origin}/api/upload`, {
         method: 'POST',
         body: formData,
@@ -45,7 +49,8 @@ export function ImageUpload({
       console.log("ImageUpload: Received response", { 
         status: response.status, 
         ok: response.ok,
-        statusText: response.statusText 
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
       });
 
       // Check if the response is OK before trying to parse JSON
@@ -103,7 +108,7 @@ export function ImageUpload({
       console.log("ImageUpload: Triggering file input click");
       fileInputRef.current.click();
     } else {
-      console.log("ImageUpload: File input ref is null");
+      console.error("ImageUpload: File input ref is null");
     }
   };
 
@@ -126,7 +131,7 @@ export function ImageUpload({
       });
       handleUpload(file);
     } else {
-      console.log("ImageUpload: No file selected");
+      console.error("ImageUpload: No file selected");
     }
   };
 
