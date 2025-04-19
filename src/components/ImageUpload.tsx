@@ -37,7 +37,7 @@ export function ImageUpload({
       }
 
       console.log("ImageUpload: Sending request to /api/upload");
-      const response = await fetch('/api/upload', {
+      const response = await fetch(`${window.location.origin}/api/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -98,15 +98,35 @@ export function ImageUpload({
   };
 
   const handleClick = () => {
+    console.log("ImageUpload: Button clicked");
     if (fileInputRef.current) {
+      console.log("ImageUpload: Triggering file input click");
       fileInputRef.current.click();
+    } else {
+      console.log("ImageUpload: File input ref is null");
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("ImageUpload: File input changed", { 
+      files: e.target.files?.length,
+      file: e.target.files?.[0] ? {
+        name: e.target.files[0].name,
+        size: e.target.files[0].size,
+        type: e.target.files[0].type
+      } : null
+    });
+    
     const file = e.target.files?.[0];
     if (file) {
+      console.log("ImageUpload: Starting upload for file", {
+        name: file.name,
+        size: file.size,
+        type: file.type
+      });
       handleUpload(file);
+    } else {
+      console.log("ImageUpload: No file selected");
     }
   };
 
@@ -122,7 +142,8 @@ export function ImageUpload({
       <button
         onClick={handleClick}
         disabled={isUploading}
-        className="w-full h-full flex items-center justify-center"
+        className="w-full h-full flex items-center justify-center cursor-pointer"
+        type="button"
       >
         {isUploading ? (
           <div className="flex flex-col items-center">
