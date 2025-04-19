@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { StarIcon } from "@heroicons/react/24/solid";
