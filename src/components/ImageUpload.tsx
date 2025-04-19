@@ -165,8 +165,9 @@ export function ImageUpload({
       <button
         onClick={handleClick}
         disabled={isUploading}
-        className="w-full h-full flex items-center justify-center cursor-pointer"
+        className="w-full h-full flex items-center justify-center cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors rounded-lg"
         type="button"
+        aria-label="Upload image"
       >
         {isUploading ? (
           <div className="flex flex-col items-center">

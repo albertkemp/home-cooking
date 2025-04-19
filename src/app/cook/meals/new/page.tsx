@@ -82,11 +82,11 @@ export default function NewMealPage() {
               {error}
             </div>
           )}
-          <div className="mb-6">
+          <div className="mb-8 border-b pb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Meal Image
             </label>
-            <div className="w-full h-48">
+            <div className="w-full h-48 bg-gray-50 rounded-lg overflow-hidden">
               <ImageUpload
                 type="food"
                 onUploadComplete={handleImageUpload}
