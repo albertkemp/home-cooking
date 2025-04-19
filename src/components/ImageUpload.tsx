@@ -24,6 +24,7 @@ export function ImageUpload({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
+    console.log("ImageUpload: Starting upload process", { fileSize: file.size, fileType: file.type });
     setIsUploading(true);
     setError(null);
 
@@ -35,9 +36,16 @@ export function ImageUpload({
         formData.append('foodItemId', foodItemId);
       }
 
+      console.log("ImageUpload: Sending request to /api/upload");
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
+      });
+
+      console.log("ImageUpload: Received response", { 
+        status: response.status, 
+        ok: response.ok,
+        statusText: response.statusText 
       });
 
       // Check if the response is OK before trying to parse JSON
@@ -52,11 +60,11 @@ export function ImageUpload({
           } else {
             // If not JSON, get the text content
             const textContent = await response.text();
-            console.error('Server returned non-JSON response:', textContent);
+            console.error('ImageUpload: Server returned non-JSON response:', textContent);
             errorMessage = `Server error: ${response.status} ${response.statusText}`;
           }
         } catch (parseError) {
-          console.error('Error parsing error response:', parseError);
+          console.error('ImageUpload: Error parsing error response:', parseError);
         }
         throw new Error(errorMessage);
       }
@@ -64,11 +72,12 @@ export function ImageUpload({
       // Check content type to ensure it's JSON
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        console.error('Server returned non-JSON response:', contentType);
+        console.error('ImageUpload: Server returned non-JSON response:', contentType);
         throw new Error('Server returned an invalid response format');
       }
 
       const data = await response.json();
+      console.log("ImageUpload: Parsed response data", { data });
       
       if (data.error) {
         throw new Error(data.error);
@@ -78,9 +87,10 @@ export function ImageUpload({
         throw new Error('No image URL returned from server');
       }
 
+      console.log("ImageUpload: Upload successful, calling onUploadComplete");
       onUploadComplete(data.url);
     } catch (err) {
-      console.error('Error uploading image:', err);
+      console.error('ImageUpload: Error uploading image:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setIsUploading(false);

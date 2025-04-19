@@ -6,9 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { Readable } from "stream";
 
 export async function POST(request: NextRequest) {
+  console.log("Upload API: Starting image upload process");
   try {
     // Check if user is authenticated
     const session = await getServerSession(authOptions);
+    console.log("Upload API: Session check", { hasSession: !!session, userId: session?.user?.id });
     if (!session?.user?.id) {
       return NextResponse.json(
         { error: "You must be logged in to upload images" },
@@ -17,8 +19,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if Cloudinary configuration is available
+    console.log("Upload API: Checking Cloudinary config", {
+      hasCloudName: !!process.env.CLOUDINARY_CLOUD_NAME,
+      hasApiKey: !!process.env.CLOUDINARY_API_KEY,
+      hasApiSecret: !!process.env.CLOUDINARY_API_SECRET
+    });
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error("Missing Cloudinary configuration");
+      console.error("Upload API: Missing Cloudinary configuration");
       return NextResponse.json(
         { error: "Server configuration error" },
         { status: 500 }
@@ -29,6 +36,12 @@ export async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
     const type = formData.get("type") as string;
     const foodItemId = formData.get("foodItemId") as string;
+
+    console.log("Upload API: Received form data", { 
+      hasFile: !!file, 
+      type, 
+      foodItemId 
+    });
 
     if (!file) {
       return NextResponse.json(
@@ -51,6 +64,7 @@ export async function POST(request: NextRequest) {
     // Upload to Cloudinary
     let imageUrl;
     try {
+      console.log("Upload API: Starting Cloudinary upload");
       const result = await new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
@@ -68,8 +82,9 @@ export async function POST(request: NextRequest) {
       });
 
       imageUrl = (result as any).secure_url;
+      console.log("Upload API: Cloudinary upload successful", { imageUrl });
     } catch (uploadError) {
-      console.error("Cloudinary upload error:", uploadError);
+      console.error("Upload API: Cloudinary upload error:", uploadError);
       return NextResponse.json(
         { error: "Failed to upload image to cloud storage" },
         { status: 500 }
@@ -78,6 +93,7 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     try {
+      console.log("Upload API: Saving to database");
       const image = await prisma.image.create({
         data: {
           url: imageUrl,
@@ -94,14 +110,15 @@ export async function POST(request: NextRequest) {
         });
       }
 
+      console.log("Upload API: Database save successful", { imageId: image.id });
       return NextResponse.json(image);
     } catch (dbError) {
-      console.error("Database error:", dbError);
+      console.error("Upload API: Database error:", dbError);
       // Still return the image URL even if database update fails
       return NextResponse.json({ url: imageUrl });
     }
   } catch (error) {
-    console.error("Unexpected error:", error);
+    console.error("Upload API: Unexpected error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }
