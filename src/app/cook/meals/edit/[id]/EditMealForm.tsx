@@ -109,6 +109,14 @@ export default function EditMealForm({ mealId }: { mealId: string }) {
           {error}
         </div>
       )}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700">Image</label>
+        <ImageUpload
+          type="food"
+          onUploadComplete={handleImageUpload}
+          currentImageUrl={imageUrl}
+        />
+      </div>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -209,15 +217,6 @@ export default function EditMealForm({ mealId }: { mealId: string }) {
           <p className="mt-1 text-sm text-gray-500 italic">
             This feature is currently unavailable
           </p>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Image</label>
-          <ImageUpload
-            type="food"
-            onUploadComplete={handleImageUpload}
-            currentImageUrl={imageUrl}
-          />
         </div>
 
         <div className="flex items-center">

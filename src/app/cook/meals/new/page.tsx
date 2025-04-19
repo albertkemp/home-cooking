@@ -95,125 +95,127 @@ export default function NewMealPage() {
               />
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Meal Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Description
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg"
-                rows={4}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Price
-              </label>
-              <input
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg"
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Number of Servings (optional)
-              </label>
-              <input
-                type="number"
-                value={servings}
-                onChange={(e) => setServings(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg"
-                min="1"
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                How many servings are available? The meal will automatically become unavailable when all servings are sold.
-              </p>
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Availability
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    checked={available}
-                    onChange={() => setAvailable(true)}
-                    className="form-radio text-blue-600"
-                  />
-                  <span className="ml-2">Available</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Meal Name
                 </label>
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    checked={!available}
-                    onChange={() => setAvailable(false)}
-                    className="form-radio text-blue-600"
-                  />
-                  <span className="ml-2">Unavailable</span>
-                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  required
+                />
               </div>
-            </div>
-
-            {available && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Add a time range (optional)
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={4}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Price
+                </label>
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Number of Servings (optional)
+                </label>
+                <input
+                  type="number"
+                  value={servings}
+                  onChange={(e) => setServings(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg"
+                  min="1"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  How many servings are available? The meal will automatically become unavailable when all servings are sold.
+                </p>
+              </div>
+              <div>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Availability
+                </label>
+                <div className="flex items-center space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      checked={available}
+                      onChange={() => setAvailable(true)}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Available</span>
                   </label>
-                  <div className="mt-1 grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs text-gray-500">From</label>
-                      <input
-                        type="datetime-local"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm opacity-50 cursor-not-allowed"
-                        disabled
-                      />
-                      <p className="text-xs text-gray-500 mt-1 italic">
-                        This feature is currently unavailable
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-500">To</label>
-                      <input
-                        type="datetime-local"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        min={startDate}
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm opacity-50 cursor-not-allowed"
-                        disabled
-                      />
-                      <p className="text-xs text-gray-500 mt-1 italic">
-                        This feature is currently unavailable
-                      </p>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      checked={!available}
+                      onChange={() => setAvailable(false)}
+                      className="form-radio text-blue-600"
+                    />
+                    <span className="ml-2">Unavailable</span>
+                  </label>
+                </div>
+              </div>
+
+              {available && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Add a time range (optional)
+                    </label>
+                    <div className="mt-1 grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-gray-500">From</label>
+                        <input
+                          type="datetime-local"
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm opacity-50 cursor-not-allowed"
+                          disabled
+                        />
+                        <p className="text-xs text-gray-500 mt-1 italic">
+                          This feature is currently unavailable
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-gray-500">To</label>
+                        <input
+                          type="datetime-local"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          min={startDate}
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm opacity-50 cursor-not-allowed"
+                          disabled
+                        />
+                        <p className="text-xs text-gray-500 mt-1 italic">
+                          This feature is currently unavailable
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="flex justify-end space-x-4">
               <button
