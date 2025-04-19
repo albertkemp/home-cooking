@@ -87,7 +87,7 @@ export async function PATCH(
     const available = formData.get("available") === "true";
     const startDate = formData.get("startDate") as string;
     const endDate = formData.get("endDate") as string;
-    const image = formData.get("image") as File;
+    const imageUrl = formData.get("imageUrl") as string;
 
     console.log("API: Received form data:", {
       name,
@@ -96,7 +96,7 @@ export async function PATCH(
       available,
       startDate,
       endDate,
-      hasImage: !!image
+      imageUrl
     });
 
     // Create update data object with only the fields that are provided
@@ -108,12 +108,44 @@ export async function PATCH(
     if (formData.has("available")) updateData.available = available;
     if (startDate) updateData.startDate = new Date(startDate);
     if (endDate) updateData.endDate = new Date(endDate);
+    if (imageUrl) {
+      // Find existing image
+      const existingImage = await prisma.image.findFirst({
+        where: {
+          foodItemId: mealId,
+        },
+      });
+
+      if (existingImage) {
+        // Update existing image
+        await prisma.image.update({
+          where: {
+            id: existingImage.id,
+          },
+          data: {
+            url: imageUrl,
+          },
+        });
+      } else {
+        // Create new image
+        await prisma.image.create({
+          data: {
+            url: imageUrl,
+            foodItemId: mealId,
+            userId: session.user.id,
+          },
+        });
+      }
+    }
 
     console.log("API: Updating meal with data:", updateData);
 
     const meal = await prisma.foodItem.update({
       where: { id: mealId },
       data: updateData,
+      include: {
+        images: true,
+      },
     });
 
     console.log("API: Meal updated successfully:", meal.id);
