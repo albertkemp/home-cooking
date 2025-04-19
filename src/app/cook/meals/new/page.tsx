@@ -84,7 +84,7 @@ export default function NewMealPage() {
           )}
           <div className="mb-8 border-b pb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Meal Image
+              Meal Schimage
             </label>
             <div className="w-full h-48 bg-gray-50 rounded-lg overflow-hidden">
               <ImageUpload
