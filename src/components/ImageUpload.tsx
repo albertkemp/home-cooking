@@ -102,7 +102,9 @@ export function ImageUpload({
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log("ImageUpload: Button clicked");
     if (fileInputRef.current) {
       console.log("ImageUpload: Triggering file input click");
