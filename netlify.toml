@@ -2,23 +2,16 @@
   command = "npm run build"
   publish = ".next"
 
-[build.environment]
-  NODE_VERSION = "18.17.0"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NPM_FLAGS = "--no-optional --no-audit --no-fund"
-  NEXT_PUBLIC_API_URL = "https://home-cooks.netlify.app"
-
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-[functions]
-  node_bundler = "esbuild"
-
+# Handle API routes
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Handle all other routes
 [[redirects]]
   from = "/*"
   to = "/index.html"

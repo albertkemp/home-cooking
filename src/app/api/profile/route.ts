@@ -1,18 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getAuthenticatedSession } from "@/lib/auth/session";
+
+// Mark this route as dynamic
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "You must be logged in to view your profile" },
-        { status: 401 }
-      );
-    }
-
+    // Get authenticated session
+    const { session, error } = await getAuthenticatedSession();
+    
+    // Return error if not authenticated
+    if (error) return error;
+    
+    // Get user data
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
@@ -28,13 +29,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // If the user is a cook, return their cook profile ID
-    if (user.role === "COOK") {
-      return NextResponse.json({ profileId: user.id });
-    }
-
-    // If the user is an eater, return null (they don't have a cook profile)
-    return NextResponse.json({ profileId: null });
+    // Return appropriate response based on user role
+    return NextResponse.json({ 
+      profileId: user.role === "COOK" ? user.id : null 
+    });
   } catch (error) {
     console.error('Error fetching profile:', error);
     return NextResponse.json(

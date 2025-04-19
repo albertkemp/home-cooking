@@ -3,12 +3,17 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../../lib/auth/auth";
 import { prisma } from "../../../lib/db/prisma";
 
+// Mark this route as dynamic
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     console.log("Starting test endpoint...");
     
-    // Check authentication
+    // Ensure we properly await the session
     const session = await getServerSession(authOptions);
+    
+    // Check authentication
     if (!session?.user?.email) {
       console.log("No authenticated user found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
