@@ -6,9 +6,15 @@
   NODE_VERSION = "18.17.0"
   NEXT_TELEMETRY_DISABLED = "1"
   NPM_FLAGS = "--no-optional --no-audit --no-fund"
+  NEXT_PUBLIC_API_URL = "https://home-cooks.netlify.app"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [functions]
-  node_bundler = "esbuild" 
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
